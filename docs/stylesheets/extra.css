@@ -115,7 +115,11 @@
   min-height: 1rem;
 }
 
-.admin-app button {
+.admin-app button,
+.admin-app .button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 2.1rem;
   padding: 0.25rem 0.65rem;
   border: 1px solid var(--md-primary-fg-color);
@@ -125,9 +129,11 @@
   cursor: pointer;
   font: inherit;
   font-weight: 700;
+  text-decoration: none;
 }
 
-.admin-app button.primary-button {
+.admin-app button.primary-button,
+.admin-app .button-link {
   background: var(--md-primary-fg-color);
   color: var(--md-primary-bg-color);
 }
