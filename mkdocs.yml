@@ -1,0 +1,40 @@
+site_name: Agent Immergence
+site_description: AI learning and research progress notes
+site_url: https://agent-immergence.github.io/
+repo_url: https://github.com/Agent-Immergence/Agent-Immergence.github.io
+repo_name: Agent-Immergence/Agent-Immergence.github.io
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - content.code.copy
+
+nav:
+  - 首页: index.md
+  - 成员:
+      - 总览: members/index.md
+      - Member A: members/member-a.md
+      - Member B: members/member-b.md
+  - 学习进度:
+      - 每周记录: progress/weekly.md
+      - 课程记录: progress/courses.md
+  - 论文:
+      - 论文总览: papers/index.md
+      - 已读论文: papers/read/index.md
+      - 示例论文: papers/read/example.md
+      - 论文模板: papers/template.md
+      - 材料说明: papers/materials/README.md
+  - 项目:
+      - 项目总览: projects/index.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
