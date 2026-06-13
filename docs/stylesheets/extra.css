@@ -1,0 +1,166 @@
+.md-typeset .tracker-app {
+  margin-top: 1.25rem;
+}
+
+.tracker-section {
+  margin: 1.6rem 0 2.2rem;
+}
+
+.tracker-table-wrap,
+.editor-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+}
+
+.md-typeset table.tracker-table,
+.md-typeset table.editor-table {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border: 0;
+}
+
+.tracker-table th,
+.tracker-table td,
+.editor-table th,
+.editor-table td {
+  min-width: 9rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.tracker-table th:first-child,
+.tracker-table td:first-child,
+.editor-table th:first-child,
+.editor-table td:first-child {
+  min-width: 6rem;
+}
+
+.muted-text {
+  color: var(--md-default-fg-color--light);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-pill.done {
+  color: #0f5132;
+  background: #d1e7dd;
+}
+
+.status-pill.todo {
+  color: #664d03;
+  background: #fff3cd;
+}
+
+.admin-app {
+  display: grid;
+  gap: 1rem;
+}
+
+.editor-panel {
+  padding: 1rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  background: var(--md-default-bg-color);
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.panel-heading h2 {
+  margin: 0;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(16rem, 1fr) auto;
+  gap: 0.8rem;
+  align-items: end;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-app input,
+.admin-app select {
+  width: 100%;
+  min-height: 2.1rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 6px;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  font: inherit;
+}
+
+.admin-app input[type="checkbox"] {
+  width: 1rem;
+  min-height: 1rem;
+}
+
+.admin-app button {
+  min-height: 2.1rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--md-primary-fg-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--md-primary-fg-color);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.admin-app button.primary-button {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+.admin-app button.danger-button {
+  border-color: #b42318;
+  color: #b42318;
+}
+
+.admin-app button:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.status-line {
+  margin: 0.8rem 0 0;
+  color: var(--md-default-fg-color--light);
+}
+
+.file-field {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 14rem;
+}
+
+@media (max-width: 700px) {
+  .editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+

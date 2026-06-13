@@ -1,25 +1,17 @@
 # Agent Immergence Website
 
-This is the public learning and research progress website for Agent Immergence.
-
-## How to use
-
-1. Create a GitHub repository named `Agent-Immergence.github.io` under the `Agent-Immergence` organization.
-2. Upload all files in this folder to that repository.
-3. Enable GitHub Pages:
-   - Repository `Settings`
-   - `Pages`
-   - Source: `GitHub Actions`
-4. Edit the Markdown files under `docs/`.
-
-After deployment, the site should be available at:
+Public site:
 
 https://agent-immergence.github.io/
 
-## Suggested weekly routine
+Editor:
 
-- Update `docs/index.md` with the latest summary.
-- Update your own page under `docs/members/`.
-- Add finished paper notes under `docs/papers/read/`.
-- Put related paper materials under `docs/papers/materials/`.
+https://agent-immergence.github.io/admin/
 
+## Data model
+
+- `docs/assets/data/site-data.json`: course progress and paper reading records.
+- `docs/files/papers/`: uploaded paper files.
+- `docs/files/notes/`: uploaded paper notes.
+
+The editor commits changes to this repository through the GitHub API. Use a fine-grained GitHub token with `Contents: Read and write` permission for this repository only.

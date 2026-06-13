@@ -1,0 +1,55 @@
+{
+  "members": [
+    {
+      "id": "member-a",
+      "name": "Member A"
+    },
+    {
+      "id": "member-b",
+      "name": "Member B"
+    }
+  ],
+  "courses": [
+    {
+      "id": "course-1",
+      "name": "Course 1"
+    },
+    {
+      "id": "course-2",
+      "name": "Course 2"
+    }
+  ],
+  "courseProgress": {
+    "member-a": {
+      "course-1": "未开始",
+      "course-2": "进行中"
+    },
+    "member-b": {
+      "course-1": "未开始",
+      "course-2": "未开始"
+    }
+  },
+  "papers": {
+    "shared": [
+      {
+        "title": "Attention Is All You Need",
+        "paperPath": "",
+        "notePath": "",
+        "reader": "Member A",
+        "readDate": "2026-06-13",
+        "completed": false
+      }
+    ],
+    "notShared": [
+      {
+        "title": "Example Private Reading",
+        "paperPath": "",
+        "notePath": "",
+        "reader": "Member B",
+        "readDate": "2026-06-13",
+        "completed": false
+      }
+    ]
+  }
+}
+
