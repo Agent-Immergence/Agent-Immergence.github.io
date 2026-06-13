@@ -10,7 +10,7 @@ https://agent-immergence.github.io/admin/
 
 ## Data model
 
-- `docs/assets/data/site-data.json`: course progress and paper reading records.
+- `docs/assets/data/site-data.json`: per-member course tables and paper reading records.
 - `docs/files/papers/`: uploaded paper files.
 - `docs/files/notes/`: uploaded paper notes.
 

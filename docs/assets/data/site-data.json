@@ -9,24 +9,45 @@
       "name": "Kayla"
     }
   ],
-  "courses": [
-    {
-      "id": "course-1",
-      "name": "Course 1"
-    },
-    {
-      "id": "course-2",
-      "name": "Course 2"
-    }
-  ],
-  "courseProgress": {
+  "courseTables": {
     "member-a": {
-      "course-1": "未开始",
-      "course-2": "进行中"
+      "columns": [
+        {
+          "id": "course-1",
+          "name": "Course 1"
+        },
+        {
+          "id": "course-2",
+          "name": "Course 2"
+        }
+      ],
+      "rows": [
+        {
+          "id": "row-1",
+          "label": "当前进度",
+          "values": {
+            "course-1": "未开始",
+            "course-2": "进行中"
+          }
+        }
+      ]
     },
     "member-b": {
-      "course-1": "未开始",
-      "course-2": "未开始"
+      "columns": [
+        {
+          "id": "course-1",
+          "name": "Course 1"
+        }
+      ],
+      "rows": [
+        {
+          "id": "row-1",
+          "label": "当前进度",
+          "values": {
+            "course-1": "未开始"
+          }
+        }
+      ]
     }
   },
   "papers": {

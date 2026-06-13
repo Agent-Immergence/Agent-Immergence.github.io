@@ -27,7 +27,7 @@
   <section class="editor-panel">
     <div class="panel-heading">
       <h2>课程进度</h2>
-      <button id="addCourseButton" type="button">添加课程</button>
+      <span class="muted-text">每个成员一张独立表格</span>
     </div>
     <div id="courseEditor"></div>
   </section>
@@ -35,7 +35,7 @@
   <section class="editor-panel">
     <div class="panel-heading">
       <h2>Shared</h2>
-      <button id="addSharedPaperButton" type="button">添加论文</button>
+      <button id="addSharedPaperButton" type="button">添加一行</button>
     </div>
     <div id="sharedPaperEditor"></div>
   </section>
@@ -43,11 +43,10 @@
   <section class="editor-panel">
     <div class="panel-heading">
       <h2>Not shared</h2>
-      <button id="addPrivatePaperButton" type="button">添加论文</button>
+      <button id="addPrivatePaperButton" type="button">添加一行</button>
     </div>
     <div id="privatePaperEditor"></div>
   </section>
 </div>
 
 <script src="/assets/js/admin.js"></script>
-

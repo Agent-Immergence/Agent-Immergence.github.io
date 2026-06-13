@@ -34,20 +34,34 @@
 
   function renderCourseProgress(root, data) {
     const members = Array.isArray(data.members) ? data.members : [];
-    const courses = Array.isArray(data.courses) ? data.courses : [];
-    const progress = data.courseProgress || {};
+    const courseTables = getCourseTables(data);
 
-    if (members.length === 0 || courses.length === 0) {
+    if (members.length === 0) {
       root.innerHTML = `<p class="muted-text">暂无课程进度。</p>`;
       return;
     }
 
     root.innerHTML = members
       .map((member) => {
-        const cells = courses
-          .map((course) => `<td>${escapeHtml(progress[member.id]?.[course.id] || "")}</td>`)
-          .join("");
-        const headers = courses.map((course) => `<th>${escapeHtml(course.name)}</th>`).join("");
+        const table = courseTables[member.id] || { columns: [], rows: [] };
+        const columns = Array.isArray(table.columns) ? table.columns : [];
+        const rows = Array.isArray(table.rows) ? table.rows : [];
+        const headers = columns.map((course) => `<th>${escapeHtml(course.name)}</th>`).join("");
+        const body = rows.length
+          ? rows
+              .map((row) => {
+                const cells = columns
+                  .map((course) => `<td>${escapeHtml(row.values?.[course.id] || "")}</td>`)
+                  .join("");
+                return `
+                  <tr>
+                    <td>${escapeHtml(row.label || "")}</td>
+                    ${cells}
+                  </tr>
+                `;
+              })
+              .join("")
+          : `<tr><td colspan="${columns.length + 1}" class="muted-text">暂无课程进度。</td></tr>`;
 
         return `
           <section class="tracker-section">
@@ -60,18 +74,39 @@
                     ${headers}
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>当前</td>
-                    ${cells}
-                  </tr>
-                </tbody>
+                <tbody>${body}</tbody>
               </table>
             </div>
           </section>
         `;
       })
       .join("");
+  }
+
+  function getCourseTables(data) {
+    if (data.courseTables && typeof data.courseTables === "object") {
+      return data.courseTables;
+    }
+
+    const tables = {};
+    const courses = Array.isArray(data.courses) ? data.courses : [];
+    const progress = data.courseProgress || {};
+    const members = Array.isArray(data.members) ? data.members : [];
+
+    members.forEach((member) => {
+      tables[member.id] = {
+        columns: courses,
+        rows: [
+          {
+            id: "row-1",
+            label: "当前进度",
+            values: progress[member.id] || {},
+          },
+        ],
+      };
+    });
+
+    return tables;
   }
 
   function renderPaperReading(root, data) {
@@ -166,4 +201,3 @@
     return escapeHtml(value).replace(/`/g, "&#96;");
   }
 })();
-

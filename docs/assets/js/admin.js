@@ -25,7 +25,6 @@
     els.loadRepoButton = document.getElementById("loadRepoButton");
     els.saveRepoButton = document.getElementById("saveRepoButton");
     els.addMemberButton = document.getElementById("addMemberButton");
-    els.addCourseButton = document.getElementById("addCourseButton");
     els.addSharedPaperButton = document.getElementById("addSharedPaperButton");
     els.addPrivatePaperButton = document.getElementById("addPrivatePaperButton");
     els.memberEditor = document.getElementById("memberEditor");
@@ -44,7 +43,6 @@
     els.loadRepoButton.addEventListener("click", () => withBusy(loadRepoData));
     els.saveRepoButton.addEventListener("click", () => withBusy(saveRepoData));
     els.addMemberButton.addEventListener("click", addMember);
-    els.addCourseButton.addEventListener("click", addCourse);
     els.addSharedPaperButton.addEventListener("click", () => addPaper("shared"));
     els.addPrivatePaperButton.addEventListener("click", () => addPaper("notShared"));
   }
@@ -154,7 +152,7 @@
 
     for (const [key, file] of Object.entries(paperFileInputs)) {
       if (!file) continue;
-      const path = `files/papers/${safeFileName(file.name)}`;
+      const path = `files/papers/${timestampedFileName(file.name)}`;
       setPaperPathFromKey(key, path, "paperPath");
       uploads.push({
         repoPath: `docs/${path}`,
@@ -164,7 +162,7 @@
 
     for (const [key, file] of Object.entries(noteFileInputs)) {
       if (!file) continue;
-      const path = `files/notes/${safeFileName(file.name)}`;
+      const path = `files/notes/${timestampedFileName(file.name)}`;
       setPaperPathFromKey(key, path, "notePath");
       uploads.push({
         repoPath: `docs/${path}`,
@@ -213,6 +211,7 @@
     els.memberEditor.querySelectorAll("[data-member-name]").forEach((input) => {
       input.addEventListener("input", () => {
         state.members[Number(input.dataset.memberName)].name = input.value;
+        renderCourseHeadings();
       });
     });
 
@@ -222,73 +221,153 @@
   }
 
   function renderCourseEditor() {
-    const headers = state.courses
+    if (state.members.length === 0) {
+      els.courseEditor.innerHTML = `<p class="muted-text">暂无成员。先添加成员，再添加课程表。</p>`;
+      return;
+    }
+
+    els.courseEditor.innerHTML = state.members
+      .map((member) => renderMemberCourseEditor(member))
+      .join("");
+
+    bindCourseEditorEvents();
+  }
+
+  function renderMemberCourseEditor(member) {
+    const table = ensureCourseTable(member.id);
+    const columns = table.columns;
+    const rows = table.rows;
+    const headers = columns
       .map(
-        (course, index) => `
+        (column, index) => `
           <th>
-            <input data-course-name="${index}" value="${escapeAttribute(course.name)}" />
-            <button type="button" class="danger-button" data-delete-course="${index}">删除</button>
+            <div class="stacked-field">
+              <input
+                data-course-column-name="${escapeAttribute(member.id)}:${index}"
+                value="${escapeAttribute(column.name)}"
+                aria-label="课程名称"
+              />
+              <button type="button" class="danger-button" data-delete-course-column="${escapeAttribute(member.id)}:${index}">删除列</button>
+            </div>
           </th>
         `
       )
       .join("");
 
-    const rows = state.members
-      .map((member) => {
-        const cells = state.courses
-          .map(
-            (course) => `
-              <td>
-                <input
-                  data-progress-member="${escapeAttribute(member.id)}"
-                  data-progress-course="${escapeAttribute(course.id)}"
-                  value="${escapeAttribute(state.courseProgress[member.id]?.[course.id] || "")}"
-                />
-              </td>
-            `
-          )
-          .join("");
+    const body = rows.length
+      ? rows
+          .map((row, rowIndex) => {
+            const cells = columns
+              .map(
+                (column) => `
+                  <td>
+                    <input
+                      data-course-cell="${escapeAttribute(member.id)}:${escapeAttribute(row.id)}:${escapeAttribute(column.id)}"
+                      value="${escapeAttribute(row.values?.[column.id] || "")}"
+                    />
+                  </td>
+                `
+              )
+              .join("");
 
-        return `
-          <tr>
-            <td>${escapeHtml(member.name)}</td>
-            ${cells}
-          </tr>
-        `;
-      })
-      .join("");
+            return `
+              <tr>
+                <td>
+                  <input
+                    data-course-row-label="${escapeAttribute(member.id)}:${rowIndex}"
+                    value="${escapeAttribute(row.label || "")}"
+                    aria-label="进度行名称"
+                  />
+                </td>
+                ${cells}
+                <td><button type="button" class="danger-button" data-delete-course-row="${escapeAttribute(member.id)}:${rowIndex}">删除行</button></td>
+              </tr>
+            `;
+          })
+          .join("")
+      : `<tr><td colspan="${columns.length + 2}" class="muted-text">暂无进度行。</td></tr>`;
 
-    els.courseEditor.innerHTML = `
-      <div class="editor-table-wrap">
-        <table class="editor-table">
-          <thead>
-            <tr>
-              <th>成员</th>
-              ${headers}
-            </tr>
-          </thead>
-          <tbody>${rows || `<tr><td colspan="${state.courses.length + 1}" class="muted-text">暂无课程。</td></tr>`}</tbody>
-        </table>
-      </div>
+    return `
+      <section class="member-course-editor" data-member-course-section="${escapeAttribute(member.id)}">
+        <div class="table-actions">
+          <h3 data-course-heading="${escapeAttribute(member.id)}">${escapeHtml(member.name)}</h3>
+          <div>
+            <button type="button" data-add-course-column="${escapeAttribute(member.id)}">添加课程列</button>
+            <button type="button" data-add-course-row="${escapeAttribute(member.id)}">添加进度行</button>
+          </div>
+        </div>
+        <div class="editor-table-wrap">
+          <table class="editor-table">
+            <thead>
+              <tr>
+                <th>进度</th>
+                ${headers}
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>${body}</tbody>
+          </table>
+        </div>
+      </section>
     `;
+  }
 
-    els.courseEditor.querySelectorAll("[data-course-name]").forEach((input) => {
-      input.addEventListener("input", () => {
-        state.courses[Number(input.dataset.courseName)].name = input.value;
+  function bindCourseEditorEvents() {
+    els.courseEditor.querySelectorAll("[data-add-course-column]").forEach((button) => {
+      button.addEventListener("click", () => addCourseColumn(button.dataset.addCourseColumn));
+    });
+
+    els.courseEditor.querySelectorAll("[data-add-course-row]").forEach((button) => {
+      button.addEventListener("click", () => addCourseRow(button.dataset.addCourseRow));
+    });
+
+    els.courseEditor.querySelectorAll("[data-delete-course-column]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const [memberId, rawIndex] = button.dataset.deleteCourseColumn.split(":");
+        deleteCourseColumn(memberId, Number(rawIndex));
       });
     });
 
-    els.courseEditor.querySelectorAll("[data-delete-course]").forEach((button) => {
-      button.addEventListener("click", () => deleteCourse(Number(button.dataset.deleteCourse)));
+    els.courseEditor.querySelectorAll("[data-delete-course-row]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const [memberId, rawIndex] = button.dataset.deleteCourseRow.split(":");
+        deleteCourseRow(memberId, Number(rawIndex));
+      });
     });
 
-    els.courseEditor.querySelectorAll("[data-progress-member]").forEach((input) => {
+    els.courseEditor.querySelectorAll("[data-course-column-name]").forEach((input) => {
       input.addEventListener("input", () => {
-        const memberId = input.dataset.progressMember;
-        const courseId = input.dataset.progressCourse;
-        state.courseProgress[memberId] ||= {};
-        state.courseProgress[memberId][courseId] = input.value;
+        const [memberId, rawIndex] = input.dataset.courseColumnName.split(":");
+        const table = ensureCourseTable(memberId);
+        const column = table.columns[Number(rawIndex)];
+        if (column) column.name = input.value;
       });
+    });
+
+    els.courseEditor.querySelectorAll("[data-course-row-label]").forEach((input) => {
+      input.addEventListener("input", () => {
+        const [memberId, rawIndex] = input.dataset.courseRowLabel.split(":");
+        const table = ensureCourseTable(memberId);
+        const row = table.rows[Number(rawIndex)];
+        if (row) row.label = input.value;
+      });
+    });
+
+    els.courseEditor.querySelectorAll("[data-course-cell]").forEach((input) => {
+      input.addEventListener("input", () => {
+        const [memberId, rowId, columnId] = input.dataset.courseCell.split(":");
+        const row = findCourseRow(memberId, rowId);
+        if (!row) return;
+        row.values ||= {};
+        row.values[columnId] = input.value;
+      });
+    });
+  }
+
+  function renderCourseHeadings() {
+    state.members.forEach((member) => {
+      const heading = els.courseEditor.querySelector(`[data-course-heading="${cssEscape(member.id)}"]`);
+      if (heading) heading.textContent = member.name;
     });
   }
 
@@ -334,7 +413,7 @@
               <th>操作</th>
             </tr>
           </thead>
-          <tbody>${rows || `<tr><td colspan="7" class="muted-text">暂无论文。</td></tr>`}</tbody>
+          <tbody>${rows || `<tr><td colspan="7" class="muted-text">暂无论文。点击上方“添加一行”。</td></tr>`}</tbody>
         </table>
       </div>
     `;
@@ -377,10 +456,10 @@
   function addMember() {
     const id = uniqueId("member", state.members.map((member) => member.id));
     state.members.push({ id, name: `Member ${state.members.length + 1}` });
-    state.courseProgress[id] = {};
-    state.courses.forEach((course) => {
-      state.courseProgress[id][course.id] = "";
-    });
+    state.courseTables[id] = {
+      columns: [],
+      rows: [],
+    };
     renderAll();
   }
 
@@ -388,27 +467,50 @@
     const member = state.members[index];
     if (!member) return;
     state.members.splice(index, 1);
-    delete state.courseProgress[member.id];
+    delete state.courseTables[member.id];
     renderAll();
   }
 
-  function addCourse() {
-    const id = uniqueId("course", state.courses.map((course) => course.id));
-    state.courses.push({ id, name: `Course ${state.courses.length + 1}` });
-    state.members.forEach((member) => {
-      state.courseProgress[member.id] ||= {};
-      state.courseProgress[member.id][id] = "";
+  function addCourseColumn(memberId) {
+    const table = ensureCourseTable(memberId);
+    const id = uniqueId("course", table.columns.map((column) => column.id));
+    table.columns.push({ id, name: `Course ${table.columns.length + 1}` });
+    table.rows.forEach((row) => {
+      row.values ||= {};
+      row.values[id] = "";
     });
     renderAll();
   }
 
-  function deleteCourse(index) {
-    const course = state.courses[index];
-    if (!course) return;
-    state.courses.splice(index, 1);
-    Object.values(state.courseProgress).forEach((progress) => {
-      delete progress[course.id];
+  function deleteCourseColumn(memberId, index) {
+    const table = ensureCourseTable(memberId);
+    const column = table.columns[index];
+    if (!column) return;
+    table.columns.splice(index, 1);
+    table.rows.forEach((row) => {
+      if (row.values) delete row.values[column.id];
     });
+    renderAll();
+  }
+
+  function addCourseRow(memberId) {
+    const table = ensureCourseTable(memberId);
+    const id = uniqueId("row", table.rows.map((row) => row.id));
+    const values = {};
+    table.columns.forEach((column) => {
+      values[column.id] = "";
+    });
+    table.rows.push({
+      id,
+      label: table.rows.length === 0 ? "当前进度" : `进度 ${table.rows.length + 1}`,
+      values,
+    });
+    renderAll();
+  }
+
+  function deleteCourseRow(memberId, index) {
+    const table = ensureCourseTable(memberId);
+    table.rows.splice(index, 1);
     renderAll();
   }
 
@@ -426,18 +528,28 @@
 
   function collectStateFromDom() {
     document.querySelectorAll("[data-member-name]").forEach((input) => {
-      state.members[Number(input.dataset.memberName)].name = input.value;
+      const member = state.members[Number(input.dataset.memberName)];
+      if (member) member.name = input.value;
     });
 
-    document.querySelectorAll("[data-course-name]").forEach((input) => {
-      state.courses[Number(input.dataset.courseName)].name = input.value;
+    document.querySelectorAll("[data-course-column-name]").forEach((input) => {
+      const [memberId, rawIndex] = input.dataset.courseColumnName.split(":");
+      const column = ensureCourseTable(memberId).columns[Number(rawIndex)];
+      if (column) column.name = input.value;
     });
 
-    document.querySelectorAll("[data-progress-member]").forEach((input) => {
-      const memberId = input.dataset.progressMember;
-      const courseId = input.dataset.progressCourse;
-      state.courseProgress[memberId] ||= {};
-      state.courseProgress[memberId][courseId] = input.value;
+    document.querySelectorAll("[data-course-row-label]").forEach((input) => {
+      const [memberId, rawIndex] = input.dataset.courseRowLabel.split(":");
+      const row = ensureCourseTable(memberId).rows[Number(rawIndex)];
+      if (row) row.label = input.value;
+    });
+
+    document.querySelectorAll("[data-course-cell]").forEach((input) => {
+      const [memberId, rowId, columnId] = input.dataset.courseCell.split(":");
+      const row = findCourseRow(memberId, rowId);
+      if (!row) return;
+      row.values ||= {};
+      row.values[columnId] = input.value;
     });
 
     document.querySelectorAll("[data-paper-field]").forEach((input) => {
@@ -449,6 +561,20 @@
       const [section, rawIndex] = input.dataset.paperCompleted.split(":");
       state.papers[section][Number(rawIndex)].completed = input.checked;
     });
+  }
+
+  function ensureCourseTable(memberId) {
+    state.courseTables[memberId] ||= { columns: [], rows: [] };
+    state.courseTables[memberId].columns ||= [];
+    state.courseTables[memberId].rows ||= [];
+    state.courseTables[memberId].rows.forEach((row) => {
+      row.values ||= {};
+    });
+    return state.courseTables[memberId];
+  }
+
+  function findCourseRow(memberId, rowId) {
+    return ensureCourseTable(memberId).rows.find((row) => row.id === rowId);
   }
 
   async function githubRequest(path, options = {}) {
@@ -487,15 +613,7 @@
   }
 
   function setButtonsDisabled(disabled) {
-    [
-      els.saveTokenButton,
-      els.loadRepoButton,
-      els.saveRepoButton,
-      els.addMemberButton,
-      els.addCourseButton,
-      els.addSharedPaperButton,
-      els.addPrivatePaperButton,
-    ].forEach((button) => {
+    document.querySelectorAll(".admin-app button").forEach((button) => {
       button.disabled = disabled;
     });
   }
@@ -516,29 +634,38 @@
   function normalizeData(data) {
     const normalized = {
       members: Array.isArray(data.members) ? data.members : [],
-      courses: Array.isArray(data.courses) ? data.courses : [],
-      courseProgress: data.courseProgress || {},
+      courseTables: data.courseTables && typeof data.courseTables === "object" ? data.courseTables : {},
       papers: {
         shared: Array.isArray(data.papers?.shared) ? data.papers.shared : [],
         notShared: Array.isArray(data.papers?.notShared) ? data.papers.notShared : [],
       },
     };
 
-    normalized.members.forEach((member, index) => {
-      member.id ||= uniqueId("member", normalized.members.map((item) => item.id).filter(Boolean), index + 1);
-      member.name ||= member.id;
-      normalized.courseProgress[member.id] ||= {};
-    });
-
-    normalized.courses.forEach((course, index) => {
-      course.id ||= uniqueId("course", normalized.courses.map((item) => item.id).filter(Boolean), index + 1);
-      course.name ||= course.id;
-    });
-
-    normalized.members.forEach((member) => {
-      normalized.courses.forEach((course) => {
-        normalized.courseProgress[member.id][course.id] ||= "";
+    if (!data.courseTables) {
+      const courses = Array.isArray(data.courses) ? data.courses : [];
+      const progress = data.courseProgress || {};
+      normalized.members.forEach((member) => {
+        normalized.courseTables[member.id] = {
+          columns: courses.map((course) => ({
+            id: course.id,
+            name: course.name || course.id,
+          })),
+          rows: [
+            {
+              id: "row-1",
+              label: "当前进度",
+              values: progress[member.id] || {},
+            },
+          ],
+        };
       });
+    }
+
+    normalized.members.forEach((member, index) => {
+      const existingIds = normalized.members.map((item) => item.id).filter(Boolean);
+      member.id ||= uniqueId("member", existingIds, index + 1);
+      member.name ||= member.id;
+      normalizeCourseTable(member.id, normalized);
     });
 
     ["shared", "notShared"].forEach((section) => {
@@ -555,11 +682,33 @@
     return normalized;
   }
 
+  function normalizeCourseTable(memberId, data) {
+    data.courseTables[memberId] ||= { columns: [], rows: [] };
+    const table = data.courseTables[memberId];
+    table.columns = Array.isArray(table.columns) ? table.columns : [];
+    table.rows = Array.isArray(table.rows) ? table.rows : [];
+
+    table.columns.forEach((column, index) => {
+      const existingIds = table.columns.map((item) => item.id).filter(Boolean);
+      column.id ||= uniqueId("course", existingIds, index + 1);
+      column.name ||= column.id;
+    });
+
+    table.rows.forEach((row, index) => {
+      const existingIds = table.rows.map((item) => item.id).filter(Boolean);
+      row.id ||= uniqueId("row", existingIds, index + 1);
+      row.label ||= index === 0 ? "当前进度" : `进度 ${index + 1}`;
+      row.values ||= {};
+      table.columns.forEach((column) => {
+        row.values[column.id] ||= "";
+      });
+    });
+  }
+
   function createEmptyState() {
     return {
       members: [],
-      courses: [],
-      courseProgress: {},
+      courseTables: {},
       papers: {
         shared: [],
         notShared: [],
@@ -578,6 +727,10 @@
     return candidate;
   }
 
+  function timestampedFileName(name) {
+    return `${Date.now()}-${safeFileName(name)}`;
+  }
+
   function safeFileName(name) {
     const clean = name
       .trim()
@@ -585,7 +738,7 @@
       .replace(/[\\/:*?"<>|#%&{}$!`'@+=]/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "");
-    return clean || `file-${Date.now()}`;
+    return clean || "file";
   }
 
   function decodeBase64Utf8(value) {
@@ -616,6 +769,13 @@
     });
   }
 
+  function cssEscape(value) {
+    if (window.CSS && typeof window.CSS.escape === "function") {
+      return window.CSS.escape(value);
+    }
+    return String(value).replace(/"/g, '\\"');
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -629,4 +789,3 @@
     return escapeHtml(value).replace(/`/g, "&#96;");
   }
 })();
-
