@@ -2,11 +2,11 @@
   "members": [
     {
       "id": "member-a",
-      "name": "Member A"
+      "name": "Lingyu"
     },
     {
       "id": "member-b",
-      "name": "Member B"
+      "name": "Kayla"
     }
   ],
   "courses": [
@@ -35,7 +35,7 @@
         "title": "Attention Is All You Need",
         "paperPath": "",
         "notePath": "",
-        "reader": "Member A",
+        "reader": "Lingyu",
         "readDate": "2026-06-13",
         "completed": false
       }
@@ -45,11 +45,10 @@
         "title": "Example Private Reading",
         "paperPath": "",
         "notePath": "",
-        "reader": "Member B",
+        "reader": "Kayla",
         "readDate": "2026-06-13",
         "completed": false
       }
     ]
   }
 }
-
