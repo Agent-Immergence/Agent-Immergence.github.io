@@ -291,9 +291,9 @@
       <section class="member-course-editor" data-member-course-section="${escapeAttribute(member.id)}">
         <div class="table-actions">
           <h3 data-course-heading="${escapeAttribute(member.id)}">${escapeHtml(member.name)}</h3>
-          <div>
-            <button type="button" data-add-course-column="${escapeAttribute(member.id)}">添加课程列</button>
-            <button type="button" data-add-course-row="${escapeAttribute(member.id)}">添加进度行</button>
+          <div class="toolbar-actions">
+            <button type="button" class="primary-button" data-add-course-column="${escapeAttribute(member.id)}">添加课程列</button>
+            <button type="button" class="primary-button" data-add-course-row="${escapeAttribute(member.id)}">添加进度行</button>
           </div>
         </div>
         <div class="editor-table-wrap">

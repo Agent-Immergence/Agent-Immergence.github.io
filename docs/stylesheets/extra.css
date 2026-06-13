@@ -165,20 +165,21 @@
 }
 
 .table-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
   gap: 0.8rem;
+  justify-items: start;
 }
 
 .table-actions h3 {
   margin: 0;
 }
 
-.table-actions > div {
+.toolbar-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  justify-content: flex-start;
+  max-width: 100%;
 }
 
 .stacked-field {
@@ -192,9 +193,13 @@
     grid-template-columns: 1fr;
   }
 
-  .panel-heading,
-  .table-actions {
+  .panel-heading {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .toolbar-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
