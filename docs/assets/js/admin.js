@@ -300,7 +300,13 @@
           <table class="editor-table">
             <thead>
               <tr>
-                <th>进度</th>
+                <th>
+                  <div class="course-corner-tools">
+                    <span>进度</span>
+                    <button type="button" class="primary-button" data-add-course-column="${escapeAttribute(member.id)}">添加课程列</button>
+                    <button type="button" class="primary-button" data-add-course-row="${escapeAttribute(member.id)}">添加进度行</button>
+                  </div>
+                </th>
                 ${headers}
                 <th>操作</th>
               </tr>
