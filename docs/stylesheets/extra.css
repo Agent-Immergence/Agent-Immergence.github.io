@@ -1,3 +1,15 @@
+.md-content,
+.md-content *,
+.md-content *::before,
+.md-content *::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
 .md-grid {
   max-width: min(1680px, calc(100vw - 2rem));
 }
@@ -91,9 +103,15 @@
 .admin-app {
   display: grid;
   gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .editor-panel {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   padding: 1rem;
   border: 1px solid var(--md-default-fg-color--lightest);
   border-radius: 8px;
@@ -102,9 +120,10 @@
 
 .panel-heading {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 0.8rem;
 }
 
@@ -125,6 +144,12 @@
   gap: 0.5rem;
   justify-content: flex-start;
   max-width: 100%;
+}
+
+.editor-table th:last-child,
+.editor-table td:last-child {
+  width: 1%;
+  min-width: 5.5rem;
 }
 
 .admin-app input,
