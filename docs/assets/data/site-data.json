@@ -15,6 +15,10 @@
         {
           "id": "course-1",
           "name": "CS336-LLM/17Lectures+5Assignment"
+        },
+        {
+          "id": "course-2",
+          "name": "Agent Course"
         }
       ],
       "rows": [
@@ -22,7 +26,8 @@
           "id": "row-1",
           "label": "当前进度",
           "values": {
-            "course-1": "6Lectures+1.5Assignment"
+            "course-1": "6Lectures+1.5Assignment",
+            "course-2": ""
           }
         }
       ]
