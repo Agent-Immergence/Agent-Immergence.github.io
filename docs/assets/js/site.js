@@ -132,7 +132,7 @@
               <tr>
                 <td class="paper-title-cell">${escapeHtml(paper.title || "")}</td>
                 <td class="link-cell">${renderFileLink(paper.paperPath, "论文")}</td>
-                <td class="link-cell">${renderFileLink(paper.notePath, "论文笔记")}</td>
+                <td class="link-cell">${renderFileLink(paper.notePath, getNoteLabel(paper.notePath))}</td>
                 <td>${escapeHtml(paper.reader || "")}</td>
                 <td>${escapeHtml(paper.readDate || "")}</td>
                 <td class="status-cell">${renderDone(paper.completed)}</td>
@@ -178,6 +178,14 @@
     }
     const url = toPublicUrl(path);
     return `<a href="${escapeAttribute(url)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`;
+  }
+
+  function getNoteLabel(path) {
+    if (!path) {
+      return "论文笔记";
+    }
+    const normalized = path.replace(/\\/g, "/");
+    return normalized.endsWith("/index.md") ? "笔记文件夹" : "论文笔记";
   }
 
   function renderDone(done) {

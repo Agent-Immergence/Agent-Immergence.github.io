@@ -189,18 +189,17 @@
 
       const folderRoot = getFolderRootName(folderFiles[0]);
       const folderPath = `files/notes/${Date.now()}-${safeFileName(folderRoot)}`;
-      const indexCandidates = [];
       const uploadedPaths = [];
 
       for (const file of folderFiles) {
-        const relativePath = sanitizeFolderRelativePath(file);
+        let relativePath = sanitizeFolderRelativePath(file);
         if (!relativePath) continue;
+        if (relativePath.toLowerCase() === "index.md") {
+          relativePath = "uploaded-index.md";
+        }
 
         const notePath = `${folderPath}/${relativePath}`;
         uploadedPaths.push(relativePath);
-        if (relativePath.toLowerCase() === "index.md") {
-          indexCandidates.push(notePath);
-        }
 
         uploads.push({
           repoPath: `docs/${notePath}`,
@@ -208,23 +207,19 @@
         });
       }
 
-      if (indexCandidates.length > 0) {
-        setPaperPathFromKey(key, indexCandidates[0], "notePath");
-      } else {
-        const [section, rawIndex] = key.split(":");
-        const paper = state.papers[section]?.[Number(rawIndex)];
-        const title = paper?.title || folderRoot || "Paper Notes";
-        const lines = uploadedPaths
-          .sort((a, b) => a.localeCompare(b))
-          .map((path) => `- [${path}](${encodeURI(path).replace(/%2F/g, "/")})`);
-        const indexContent = `# ${title}\n\n${lines.join("\n")}\n`;
-        const indexPath = `${folderPath}/index.md`;
-        setPaperPathFromKey(key, indexPath, "notePath");
-        uploads.push({
-          repoPath: `docs/${indexPath}`,
-          base64: bytesToBase64(new TextEncoder().encode(indexContent)),
-        });
-      }
+      const [section, rawIndex] = key.split(":");
+      const paper = state.papers[section]?.[Number(rawIndex)];
+      const title = paper?.title || folderRoot || "Paper Notes";
+      const lines = uploadedPaths
+        .sort((a, b) => a.localeCompare(b))
+        .map((path) => `- [${path}](${encodeURI(path).replace(/%2F/g, "/")})`);
+      const indexContent = `# ${title} 笔记文件夹\n\n${lines.join("\n")}\n`;
+      const indexPath = `${folderPath}/index.md`;
+      setPaperPathFromKey(key, indexPath, "notePath");
+      uploads.push({
+        repoPath: `docs/${indexPath}`,
+        base64: bytesToBase64(new TextEncoder().encode(indexContent)),
+      });
     }
 
     return uploads;
