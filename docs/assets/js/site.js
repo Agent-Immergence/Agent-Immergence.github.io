@@ -133,6 +133,7 @@
             (paper) => `
               <tr>
                 <td class="paper-title-cell">${escapeHtml(paper.title || "")}</td>
+                <td>${escapeHtml(paper.field || "")}</td>
                 <td class="link-cell">${renderFileLink(paper.paperPath, "论文")}</td>
                 <td class="link-cell">${renderNoteLink(paper.notePath)}</td>
                 <td>${escapeHtml(paper.reader || "")}</td>
@@ -142,7 +143,7 @@
             `
           )
           .join("")
-      : `<tr><td colspan="6" class="table-empty muted-text">暂无记录。</td></tr>`;
+      : `<tr><td colspan="7" class="table-empty muted-text">暂无记录。</td></tr>`;
 
     return `
       <section class="tracker-section">
@@ -151,6 +152,7 @@
           <table class="tracker-table paper-table">
             <colgroup>
               <col class="paper-title-col" />
+              <col class="paper-field-col" />
               <col class="paper-file-col" />
               <col class="paper-note-col" />
               <col class="paper-reader-col" />
@@ -160,6 +162,7 @@
             <thead>
               <tr>
                 <th>论文名称</th>
+                <th>领域</th>
                 <th>论文</th>
                 <th>论文笔记</th>
                 <th>阅读人</th>

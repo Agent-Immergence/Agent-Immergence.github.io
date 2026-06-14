@@ -437,6 +437,7 @@
         return `
           <tr>
             <td><input data-paper-field="${key}:title" value="${escapeAttribute(paper.title || "")}" /></td>
+            <td><input data-paper-field="${key}:field" value="${escapeAttribute(paper.field || "")}" /></td>
             <td>
               <div class="file-field">
                 <input data-paper-field="${key}:paperPath" value="${escapeAttribute(paper.paperPath || "")}" />
@@ -471,6 +472,7 @@
           <thead>
             <tr>
               <th>论文名称</th>
+              <th>领域</th>
               <th>论文</th>
               <th>论文笔记</th>
               <th>阅读人</th>
@@ -479,7 +481,7 @@
               <th>操作</th>
             </tr>
           </thead>
-          <tbody>${rows || `<tr><td colspan="7" class="muted-text">暂无论文。点击上方“添加一行”。</td></tr>`}</tbody>
+          <tbody>${rows || `<tr><td colspan="8" class="muted-text">暂无论文。点击上方“添加一行”。</td></tr>`}</tbody>
         </table>
       </div>
     `;
@@ -595,6 +597,7 @@
   function addPaper(section) {
     state.papers[section].push({
       title: "",
+      field: "",
       paperPath: "",
       notePath: "",
       reader: state.members[0]?.name || "",
@@ -749,6 +752,7 @@
     ["shared", "notShared"].forEach((section) => {
       normalized.papers[section] = normalized.papers[section].map((paper) => ({
         title: paper.title || "",
+        field: paper.field || "",
         paperPath: paper.paperPath || "",
         notePath: paper.notePath || "",
         reader: paper.reader || "",

@@ -54,6 +54,7 @@
     "shared": [
       {
         "title": "ReAct",
+        "field": "",
         "paperPath": "files/papers/1781407212538-ReAct.pdf",
         "notePath": "files/notes/1781407212541-ReAct/index.md",
         "reader": "Lingyu",

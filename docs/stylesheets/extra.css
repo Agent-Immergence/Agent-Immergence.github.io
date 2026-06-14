@@ -111,27 +111,31 @@ body {
 }
 
 .paper-table .paper-title-col {
-  width: 20%;
-}
-
-.paper-table .paper-file-col {
-  width: 12%;
-}
-
-.paper-table .paper-note-col {
   width: 18%;
 }
 
-.paper-table .paper-reader-col {
-  width: 14%;
+.paper-table .paper-field-col {
+  width: 12%;
 }
 
-.paper-table .paper-date-col {
+.paper-table .paper-file-col {
+  width: 10%;
+}
+
+.paper-table .paper-note-col {
   width: 16%;
 }
 
-.paper-table .paper-status-col {
+.paper-table .paper-reader-col {
   width: 12%;
+}
+
+.paper-table .paper-date-col {
+  width: 14%;
+}
+
+.paper-table .paper-status-col {
+  width: 10%;
 }
 
 .paper-table .link-cell,

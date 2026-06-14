@@ -20,7 +20,7 @@ extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
-  - assets/js/site.js?v=2
+  - assets/js/site.js?v=3
 
 markdown_extensions:
   - admonition
