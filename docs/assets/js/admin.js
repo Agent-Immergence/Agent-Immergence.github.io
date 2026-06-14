@@ -4,6 +4,7 @@
   const BRANCH = "main";
   const DATA_PATH = "docs/assets/data/site-data.json";
   const API_ROOT = `https://api.github.com/repos/${OWNER}/${REPO}`;
+  const SITE_ORIGIN = "https://agent-immergence.github.io";
   const TOKEN_KEY = "agentImmergenceGithubToken";
   const TOKEN_URL =
     "https://github.com/settings/personal-access-tokens/new?name=Agent%20Immergence%20Website%20Editor&description=Edit%20course%20progress%20and%20paper%20reading%20data%20for%20Agent%20Immergence&target_name=Agent-Immergence&expires_in=90&contents=write";
@@ -212,8 +213,8 @@
       const title = paper?.title || folderRoot || "Paper Notes";
       const lines = uploadedPaths
         .sort((a, b) => a.localeCompare(b))
-        .map((path) => `- [${path}](${folderIndexHref(folderPath, path)})`);
-      const indexContent = `# ${title} 笔记文件夹\n\n${lines.join("\n")}\n`;
+        .map((path) => folderIndexListItem(folderPath, path));
+      const indexContent = `# ${title} 笔记文件夹\n\n<ul>\n${lines.join("\n")}\n</ul>\n`;
       const indexPath = `${folderPath}/index.md`;
       setPaperPathFromKey(key, indexPath, "notePath");
       uploads.push({
@@ -827,14 +828,20 @@
     return safeFileName(name).replace(/^\.+$/, "file");
   }
 
+  function folderIndexListItem(folderPath, relativePath) {
+    const label = escapeHtml(relativePath);
+    const href = escapeAttribute(folderIndexHref(folderPath, relativePath));
+    return `<li><a href="${href}" target="_blank" rel="noopener">${label}</a></li>`;
+  }
+
   function folderIndexHref(folderPath, relativePath) {
     const normalized = relativePath.replace(/\\/g, "/").replace(/^\/+/, "");
     const encodedParts = normalized.split("/").map(encodeURIComponent);
     if (normalized.toLowerCase().endsWith(".md")) {
       const withoutMd = encodedParts.join("/").replace(/\.md$/i, "/");
-      return `/${folderPath}/${withoutMd}`;
+      return `${SITE_ORIGIN}/${folderPath}/${withoutMd}`;
     }
-    return `/${folderPath}/${encodedParts.join("/")}`;
+    return `${SITE_ORIGIN}/${folderPath}/${encodedParts.join("/")}`;
   }
 
   function safeFileName(name) {
