@@ -15,10 +15,6 @@
         {
           "id": "course-1",
           "name": "Course 1"
-        },
-        {
-          "id": "course-2",
-          "name": "Course 2"
         }
       ],
       "rows": [
@@ -26,8 +22,7 @@
           "id": "row-1",
           "label": "当前进度",
           "values": {
-            "course-1": "未开始",
-            "course-2": "进行中"
+            "course-1": "未开始"
           }
         }
       ]
