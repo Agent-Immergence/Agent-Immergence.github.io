@@ -11,6 +11,7 @@
   let state = createEmptyState();
   let paperFileInputs = {};
   let noteFileInputs = {};
+  let noteFolderInputs = {};
 
   const els = {};
 
@@ -78,6 +79,7 @@
     state = normalizeData(JSON.parse(decodeBase64Utf8(file.content || "")));
     paperFileInputs = {};
     noteFileInputs = {};
+    noteFolderInputs = {};
     renderAll();
     setStatus("已读取仓库数据。");
   }
@@ -153,6 +155,7 @@
 
     paperFileInputs = {};
     noteFileInputs = {};
+    noteFolderInputs = {};
     renderAll();
     setStatus("已保存。网站会在 GitHub Actions 完成后更新。");
   }
@@ -178,6 +181,50 @@
         repoPath: `docs/${path}`,
         base64: await fileToBase64(file),
       });
+    }
+
+    for (const [key, files] of Object.entries(noteFolderInputs)) {
+      const folderFiles = Array.from(files || []).filter(Boolean);
+      if (folderFiles.length === 0) continue;
+
+      const folderRoot = getFolderRootName(folderFiles[0]);
+      const folderPath = `files/notes/${Date.now()}-${safeFileName(folderRoot)}`;
+      const indexCandidates = [];
+      const uploadedPaths = [];
+
+      for (const file of folderFiles) {
+        const relativePath = sanitizeFolderRelativePath(file);
+        if (!relativePath) continue;
+
+        const notePath = `${folderPath}/${relativePath}`;
+        uploadedPaths.push(relativePath);
+        if (relativePath.toLowerCase() === "index.md") {
+          indexCandidates.push(notePath);
+        }
+
+        uploads.push({
+          repoPath: `docs/${notePath}`,
+          base64: await fileToBase64(file),
+        });
+      }
+
+      if (indexCandidates.length > 0) {
+        setPaperPathFromKey(key, indexCandidates[0], "notePath");
+      } else {
+        const [section, rawIndex] = key.split(":");
+        const paper = state.papers[section]?.[Number(rawIndex)];
+        const title = paper?.title || folderRoot || "Paper Notes";
+        const lines = uploadedPaths
+          .sort((a, b) => a.localeCompare(b))
+          .map((path) => `- [${path}](${encodeURI(path).replace(/%2F/g, "/")})`);
+        const indexContent = `# ${title}\n\n${lines.join("\n")}\n`;
+        const indexPath = `${folderPath}/index.md`;
+        setPaperPathFromKey(key, indexPath, "notePath");
+        uploads.push({
+          repoPath: `docs/${indexPath}`,
+          base64: bytesToBase64(new TextEncoder().encode(indexContent)),
+        });
+      }
     }
 
     return uploads;
@@ -403,7 +450,14 @@
             <td>
               <div class="file-field">
                 <input data-paper-field="${key}:notePath" value="${escapeAttribute(paper.notePath || "")}" />
-                <input data-note-file="${key}" type="file" />
+                <label class="mini-label">
+                  上传单个笔记文件
+                  <input data-note-file="${key}" type="file" />
+                </label>
+                <label class="mini-label">
+                  上传笔记文件夹
+                  <input data-note-folder="${key}" type="file" webkitdirectory directory multiple />
+                </label>
               </div>
             </td>
             <td><input data-paper-field="${key}:reader" value="${escapeAttribute(paper.reader || "")}" /></td>
@@ -457,6 +511,18 @@
     root.querySelectorAll("[data-note-file]").forEach((input) => {
       input.addEventListener("change", () => {
         noteFileInputs[input.dataset.noteFile] = input.files?.[0] || null;
+        if (input.files?.[0]) {
+          delete noteFolderInputs[input.dataset.noteFile];
+        }
+      });
+    });
+
+    root.querySelectorAll("[data-note-folder]").forEach((input) => {
+      input.addEventListener("change", () => {
+        noteFolderInputs[input.dataset.noteFolder] = input.files || null;
+        if (input.files?.length) {
+          delete noteFileInputs[input.dataset.noteFolder];
+        }
       });
     });
 
@@ -745,6 +811,25 @@
 
   function timestampedFileName(name) {
     return `${Date.now()}-${safeFileName(name)}`;
+  }
+
+  function getFolderRootName(file) {
+    const relativePath = file.webkitRelativePath || file.name || "notes-folder";
+    return relativePath.split(/[\\/]+/).filter(Boolean)[0] || "notes-folder";
+  }
+
+  function sanitizeFolderRelativePath(file) {
+    const relativePath = file.webkitRelativePath || file.name;
+    const parts = relativePath.split(/[\\/]+/).filter(Boolean);
+    if (parts.length > 1) {
+      parts.shift();
+    }
+    const safeParts = (parts.length ? parts : [file.name]).map(safePathSegment).filter(Boolean);
+    return safeParts.join("/");
+  }
+
+  function safePathSegment(name) {
+    return safeFileName(name).replace(/^\.+$/, "file");
   }
 
   function safeFileName(name) {
