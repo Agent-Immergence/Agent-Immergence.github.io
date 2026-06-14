@@ -54,11 +54,11 @@
     "shared": [
       {
         "title": "ReAct",
-        "paperPath": "files/papers/1781402736536-ReAct.pdf",
-        "notePath": "files/notes/1781402736541-论文笔记：Agents(1).pdf",
+        "paperPath": "files/papers/1781407212538-ReAct.pdf",
+        "notePath": "files/notes/1781407212541-ReAct/index.md",
         "reader": "Lingyu",
         "readDate": "2026-06-14",
-        "completed": true
+        "completed": false
       }
     ],
     "notShared": []
