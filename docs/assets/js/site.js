@@ -46,6 +46,12 @@
         const table = courseTables[member.id] || { columns: [], rows: [] };
         const columns = Array.isArray(table.columns) ? table.columns : [];
         const rows = Array.isArray(table.rows) ? table.rows : [];
+        const colgroup = `
+          <colgroup>
+            <col class="course-progress-col" />
+            ${columns.map(() => `<col class="course-value-col" />`).join("")}
+          </colgroup>
+        `;
         const headers = columns.map((course) => `<th>${escapeHtml(course.name)}</th>`).join("");
         const body = rows.length
           ? rows
@@ -55,19 +61,20 @@
                   .join("");
                 return `
                   <tr>
-                    <td>${escapeHtml(row.label || "")}</td>
+                    <td class="row-label">${escapeHtml(row.label || "")}</td>
                     ${cells}
                   </tr>
                 `;
               })
               .join("")
-          : `<tr><td colspan="${columns.length + 1}" class="muted-text">暂无课程进度。</td></tr>`;
+          : `<tr><td colspan="${columns.length + 1}" class="table-empty muted-text">暂无课程进度。</td></tr>`;
 
         return `
           <section class="tracker-section">
             <h2>${escapeHtml(member.name)}</h2>
             <div class="tracker-table-wrap">
-              <table class="tracker-table">
+              <table class="tracker-table course-table">
+                ${colgroup}
                 <thead>
                   <tr>
                     <th>进度</th>
@@ -123,23 +130,31 @@
           .map(
             (paper) => `
               <tr>
-                <td>${escapeHtml(paper.title || "")}</td>
-                <td>${renderFileLink(paper.paperPath, "论文")}</td>
-                <td>${renderFileLink(paper.notePath, "论文笔记")}</td>
+                <td class="paper-title-cell">${escapeHtml(paper.title || "")}</td>
+                <td class="link-cell">${renderFileLink(paper.paperPath, "论文")}</td>
+                <td class="link-cell">${renderFileLink(paper.notePath, "论文笔记")}</td>
                 <td>${escapeHtml(paper.reader || "")}</td>
                 <td>${escapeHtml(paper.readDate || "")}</td>
-                <td>${renderDone(paper.completed)}</td>
+                <td class="status-cell">${renderDone(paper.completed)}</td>
               </tr>
             `
           )
           .join("")
-      : `<tr><td colspan="6" class="muted-text">暂无记录。</td></tr>`;
+      : `<tr><td colspan="6" class="table-empty muted-text">暂无记录。</td></tr>`;
 
     return `
       <section class="tracker-section">
         <h2>${escapeHtml(title)}</h2>
         <div class="tracker-table-wrap">
-          <table class="tracker-table">
+          <table class="tracker-table paper-table">
+            <colgroup>
+              <col class="paper-title-col" />
+              <col class="paper-file-col" />
+              <col class="paper-note-col" />
+              <col class="paper-reader-col" />
+              <col class="paper-date-col" />
+              <col class="paper-status-col" />
+            </colgroup>
             <thead>
               <tr>
                 <th>论文名称</th>

@@ -60,8 +60,6 @@ body {
   border: 0;
 }
 
-.tracker-table th,
-.tracker-table td,
 .editor-table th,
 .editor-table td {
   min-width: 9rem;
@@ -69,11 +67,76 @@ body {
   white-space: nowrap;
 }
 
-.tracker-table th:first-child,
-.tracker-table td:first-child,
 .editor-table th:first-child,
 .editor-table td:first-child {
   min-width: 6rem;
+}
+
+.tracker-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.tracker-table th,
+.tracker-table td {
+  min-width: 0;
+  padding: 0.62rem 0.8rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  text-align: left !important;
+  vertical-align: middle;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.tracker-table thead th {
+  color: var(--md-default-fg-color);
+  font-weight: 700;
+}
+
+.tracker-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tracker-table .row-label {
+  font-weight: 600;
+}
+
+.tracker-table .table-empty {
+  padding: 0.8rem;
+  text-align: left !important;
+}
+
+.course-table .course-progress-col {
+  width: 13rem;
+}
+
+.paper-table .paper-title-col {
+  width: 20%;
+}
+
+.paper-table .paper-file-col {
+  width: 12%;
+}
+
+.paper-table .paper-note-col {
+  width: 18%;
+}
+
+.paper-table .paper-reader-col {
+  width: 14%;
+}
+
+.paper-table .paper-date-col {
+  width: 16%;
+}
+
+.paper-table .paper-status-col {
+  width: 12%;
+}
+
+.paper-table .link-cell,
+.paper-table .status-cell {
+  white-space: nowrap;
 }
 
 .muted-text {
