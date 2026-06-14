@@ -14,11 +14,7 @@
       "columns": [
         {
           "id": "course-1",
-          "name": "Course 1"
-        },
-        {
-          "id": "course-2",
-          "name": "Course 2"
+          "name": "CS336-LLM/17Lectures+5Assignment"
         }
       ],
       "rows": [
@@ -26,8 +22,7 @@
           "id": "row-1",
           "label": "当前进度",
           "values": {
-            "course-1": "未开始",
-            "course-2": "进行中"
+            "course-1": "6Lectures+1.5Assignment"
           }
         }
       ]
@@ -53,23 +48,14 @@
   "papers": {
     "shared": [
       {
-        "title": "Attention Is All You Need",
-        "paperPath": "",
-        "notePath": "",
+        "title": "ReAct",
+        "paperPath": "files/papers/1781402736536-ReAct.pdf",
+        "notePath": "files/notes/1781402736541-论文笔记：Agents(1).pdf",
         "reader": "Lingyu",
-        "readDate": "2026-06-13",
-        "completed": false
+        "readDate": "2026-06-14",
+        "completed": true
       }
     ],
-    "notShared": [
-      {
-        "title": "Example Private Reading",
-        "paperPath": "",
-        "notePath": "",
-        "reader": "Kayla",
-        "readDate": "2026-06-13",
-        "completed": false
-      }
-    ]
+    "notShared": []
   }
 }
