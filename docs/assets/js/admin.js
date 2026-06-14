@@ -5,6 +5,8 @@
   const DATA_PATH = "docs/assets/data/site-data.json";
   const API_ROOT = `https://api.github.com/repos/${OWNER}/${REPO}`;
   const TOKEN_KEY = "agentImmergenceGithubToken";
+  const TOKEN_URL =
+    "https://github.com/settings/personal-access-tokens/new?name=Agent%20Immergence%20Website%20Editor&description=Edit%20course%20progress%20and%20paper%20reading%20data%20for%20Agent%20Immergence&target_name=Agent-Immergence&expires_in=90&contents=write";
 
   let state = createEmptyState();
   let paperFileInputs = {};
@@ -21,6 +23,7 @@
 
   function cacheElements() {
     els.tokenInput = document.getElementById("tokenInput");
+    els.openTokenButton = document.getElementById("openTokenButton");
     els.saveTokenButton = document.getElementById("saveTokenButton");
     els.loadRepoButton = document.getElementById("loadRepoButton");
     els.saveRepoButton = document.getElementById("saveRepoButton");
@@ -35,6 +38,13 @@
   }
 
   function bindEvents() {
+    els.openTokenButton.addEventListener("click", () => {
+      const opened = window.open(TOKEN_URL, "_blank", "noopener,noreferrer");
+      if (!opened) {
+        setStatus("浏览器拦截了新窗口，请点击上方提示里的备用链接。");
+      }
+    });
+
     els.saveTokenButton.addEventListener("click", () => {
       localStorage.setItem(TOKEN_KEY, els.tokenInput.value.trim());
       setStatus("Token 已保存到当前浏览器。");

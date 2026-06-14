@@ -192,6 +192,11 @@ body {
   color: var(--md-primary-bg-color);
 }
 
+.admin-app .inline-link {
+  margin-left: 0.5rem;
+  font-weight: 700;
+}
+
 .admin-app button.danger-button {
   border-color: #b42318;
   color: #b42318;

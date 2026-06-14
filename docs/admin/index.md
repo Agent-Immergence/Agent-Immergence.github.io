@@ -8,18 +8,22 @@
         <input id="tokenInput" type="password" autocomplete="off" placeholder="ghp_..." />
       </label>
       <div class="editor-actions">
-        <a
-          class="button-link"
-          href="https://github.com/settings/personal-access-tokens/new?name=Agent%20Immergence%20Website%20Editor&description=Edit%20course%20progress%20and%20paper%20reading%20data%20for%20Agent%20Immergence&target_name=Agent-Immergence&expires_in=90&contents=write"
-          target="_blank"
-          rel="noopener noreferrer"
-        >获取 Token</a>
+        <button id="openTokenButton" type="button" class="primary-button">获取 Token</button>
         <button id="saveTokenButton" type="button">保存 Token</button>
         <button id="loadRepoButton" type="button">读取仓库</button>
         <button id="saveRepoButton" type="button" class="primary-button">保存到网站</button>
       </div>
     </div>
-    <p class="status-line">创建 Token 时，选择这个仓库，并把 Contents 权限设为 Read and write。</p>
+    <p class="status-line">
+      创建 Token 时，选择这个仓库，并把 Contents 权限设为 Read and write。
+      <a
+        id="tokenFallbackLink"
+        class="inline-link"
+        href="https://github.com/settings/personal-access-tokens/new?name=Agent%20Immergence%20Website%20Editor&description=Edit%20course%20progress%20and%20paper%20reading%20data%20for%20Agent%20Immergence&target_name=Agent-Immergence&expires_in=90&contents=write"
+        target="_blank"
+        rel="noopener noreferrer"
+      >备用链接</a>
+    </p>
     <p id="adminStatus" class="status-line">正在读取数据...</p>
   </section>
 
