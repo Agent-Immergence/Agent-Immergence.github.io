@@ -60,6 +60,15 @@
         "reader": "Lingyu",
         "readDate": "2026-06-14",
         "completed": true
+      },
+      {
+        "title": "",
+        "field": "",
+        "paperPath": "",
+        "notePath": "",
+        "reader": "Lingyu",
+        "readDate": "2026-06-14",
+        "completed": false
       }
     ],
     "notShared": [
@@ -67,7 +76,7 @@
         "title": "FlashAttention",
         "field": "LLM",
         "paperPath": "files/papers/1781421014226-FlashAttention.pdf",
-        "notePath": "",
+        "notePath": "files/notes/1781427051510-Main-Notes.pdf",
         "reader": "Lingyu",
         "readDate": "2026-06-14",
         "completed": false
