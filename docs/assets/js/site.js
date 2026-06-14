@@ -1,5 +1,7 @@
 (function () {
   const DATA_URL = "/assets/data/site-data.json";
+  const REPO_URL = "https://github.com/Agent-Immergence/Agent-Immergence.github.io";
+  const REPO_BRANCH = "main";
 
   document.addEventListener("DOMContentLoaded", async () => {
     const courseRoot = document.getElementById("course-progress-app");
@@ -132,7 +134,7 @@
               <tr>
                 <td class="paper-title-cell">${escapeHtml(paper.title || "")}</td>
                 <td class="link-cell">${renderFileLink(paper.paperPath, "论文")}</td>
-                <td class="link-cell">${renderFileLink(paper.notePath, getNoteLabel(paper.notePath))}</td>
+                <td class="link-cell">${renderNoteLink(paper.notePath)}</td>
                 <td>${escapeHtml(paper.reader || "")}</td>
                 <td>${escapeHtml(paper.readDate || "")}</td>
                 <td class="status-cell">${renderDone(paper.completed)}</td>
@@ -178,6 +180,31 @@
     }
     const url = toPublicUrl(path);
     return `<a href="${escapeAttribute(url)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`;
+  }
+
+  function renderNoteLink(path) {
+    if (!path) {
+      return `<span class="muted-text">未上传</span>`;
+    }
+    const label = getNoteLabel(path);
+    const url = isNoteFolder(path) ? toRepoFolderUrl(path) : toPublicUrl(path);
+    return `<a href="${escapeAttribute(url)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`;
+  }
+
+  function isNoteFolder(path) {
+    return path.replace(/\\/g, "/").endsWith("/index.md");
+  }
+
+  function toRepoFolderUrl(path) {
+    let normalized = path.replace(/\\/g, "/").replace(/^\/+/, "");
+    if (!normalized.startsWith("docs/")) {
+      normalized = `docs/${normalized}`;
+    }
+    if (normalized.endsWith("/index.md")) {
+      normalized = normalized.slice(0, -"index.md".length);
+    }
+    normalized = normalized.replace(/\/+$/, "");
+    return `${REPO_URL}/tree/${REPO_BRANCH}/${normalized}`;
   }
 
   function getNoteLabel(path) {
