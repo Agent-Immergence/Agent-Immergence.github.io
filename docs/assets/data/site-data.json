@@ -71,6 +71,15 @@
         "reader": "Lingyu",
         "readDate": "2026-06-14",
         "completed": false
+      },
+      {
+        "title": "FlashAttention2",
+        "field": "LLM",
+        "paperPath": "files/papers/1781457990648-FlashAttention2.pdf",
+        "notePath": "files/notes/1781457990653-Main-Notes.pdf",
+        "reader": "Lingyu",
+        "readDate": "2026-06-14",
+        "completed": false
       }
     ]
   }
