@@ -212,7 +212,7 @@
       const title = paper?.title || folderRoot || "Paper Notes";
       const lines = uploadedPaths
         .sort((a, b) => a.localeCompare(b))
-        .map((path) => `- [${path}](${encodeURI(path).replace(/%2F/g, "/")})`);
+        .map((path) => `- [${path}](${folderIndexHref(folderPath, path)})`);
       const indexContent = `# ${title} 笔记文件夹\n\n${lines.join("\n")}\n`;
       const indexPath = `${folderPath}/index.md`;
       setPaperPathFromKey(key, indexPath, "notePath");
@@ -825,6 +825,16 @@
 
   function safePathSegment(name) {
     return safeFileName(name).replace(/^\.+$/, "file");
+  }
+
+  function folderIndexHref(folderPath, relativePath) {
+    const normalized = relativePath.replace(/\\/g, "/").replace(/^\/+/, "");
+    const encodedParts = normalized.split("/").map(encodeURIComponent);
+    if (normalized.toLowerCase().endsWith(".md")) {
+      const withoutMd = encodedParts.join("/").replace(/\.md$/i, "/");
+      return `/${folderPath}/${withoutMd}`;
+    }
+    return `/${folderPath}/${encodedParts.join("/")}`;
   }
 
   function safeFileName(name) {
