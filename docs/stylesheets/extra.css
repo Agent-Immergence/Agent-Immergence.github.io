@@ -219,6 +219,28 @@ body {
   min-width: 5.5rem;
 }
 
+.editor-table th.paper-actions-header,
+.editor-table td.paper-actions-cell {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  min-width: 10.5rem;
+  background: var(--md-default-bg-color);
+  box-shadow: -6px 0 10px rgba(0, 0, 0, 0.06);
+  vertical-align: top;
+}
+
+.row-actions {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.row-actions button {
+  width: 100%;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
 .admin-app input,
 .admin-app select {
   width: 100%;

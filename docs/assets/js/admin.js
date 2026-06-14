@@ -460,7 +460,14 @@
             <td><input data-paper-field="${key}:reader" value="${escapeAttribute(paper.reader || "")}" /></td>
             <td><input data-paper-field="${key}:readDate" type="date" value="${escapeAttribute(paper.readDate || "")}" /></td>
             <td><input data-paper-completed="${key}" type="checkbox" ${paper.completed ? "checked" : ""} /></td>
-            <td><button type="button" class="danger-button" data-delete-paper="${key}">删除</button></td>
+            <td class="paper-actions-cell">
+              <div class="row-actions">
+                <button type="button" data-move-paper="${key}">
+                  ${section === "shared" ? "移到 Not shared" : "移到 Shared"}
+                </button>
+                <button type="button" class="danger-button" data-delete-paper="${key}">删除行</button>
+              </div>
+            </td>
           </tr>
         `;
       })
@@ -478,7 +485,7 @@
               <th>阅读人</th>
               <th>阅读时间</th>
               <th>是否完成</th>
-              <th>操作</th>
+              <th class="paper-actions-header">行操作</th>
             </tr>
           </thead>
           <tbody>${rows || `<tr><td colspan="8" class="muted-text">暂无论文。点击上方“添加一行”。</td></tr>`}</tbody>
@@ -524,13 +531,65 @@
       });
     });
 
+    root.querySelectorAll("[data-move-paper]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const [paperSection, rawIndex] = button.dataset.movePaper.split(":");
+        movePaper(paperSection, Number(rawIndex));
+      });
+    });
+
     root.querySelectorAll("[data-delete-paper]").forEach((button) => {
       button.addEventListener("click", () => {
         const [paperSection, rawIndex] = button.dataset.deletePaper.split(":");
-        state.papers[paperSection].splice(Number(rawIndex), 1);
-        renderAll();
+        deletePaper(paperSection, Number(rawIndex));
       });
     });
+  }
+
+  function movePaper(section, index) {
+    collectStateFromDom();
+    const targetSection = section === "shared" ? "notShared" : "shared";
+    const paper = state.papers[section][index];
+    if (!paper) return;
+
+    const oldKey = `${section}:${index}`;
+    const newKey = `${targetSection}:${state.papers[targetSection].length}`;
+    relocatePaperUploads(oldKey, newKey);
+
+    state.papers[section].splice(index, 1);
+    state.papers[targetSection].push(paper);
+    renderAll();
+    setStatus(targetSection === "shared" ? "已移到 Shared。" : "已移到 Not shared。");
+  }
+
+  function deletePaper(section, index) {
+    collectStateFromDom();
+    const key = `${section}:${index}`;
+    clearPaperUploads(key);
+    state.papers[section].splice(index, 1);
+    renderAll();
+    setStatus("已删除该行。");
+  }
+
+  function relocatePaperUploads(oldKey, newKey) {
+    if (paperFileInputs[oldKey]) {
+      paperFileInputs[newKey] = paperFileInputs[oldKey];
+      delete paperFileInputs[oldKey];
+    }
+    if (noteFileInputs[oldKey]) {
+      noteFileInputs[newKey] = noteFileInputs[oldKey];
+      delete noteFileInputs[oldKey];
+    }
+    if (noteFolderInputs[oldKey]) {
+      noteFolderInputs[newKey] = noteFolderInputs[oldKey];
+      delete noteFolderInputs[oldKey];
+    }
+  }
+
+  function clearPaperUploads(key) {
+    delete paperFileInputs[key];
+    delete noteFileInputs[key];
+    delete noteFolderInputs[key];
   }
 
   function addMember() {
