@@ -830,8 +830,10 @@
 
   function folderIndexListItem(folderPath, relativePath) {
     const label = escapeHtml(relativePath);
-    const href = escapeAttribute(folderIndexHref(folderPath, relativePath));
-    return `<li><a href="${href}" target="_blank" rel="noopener">${label}</a></li>`;
+    const href = folderIndexHref(folderPath, relativePath);
+    const safeHref = escapeAttribute(href);
+    const clickAction = escapeAttribute(`window.open(${JSON.stringify(href)}, "_blank", "noopener")`);
+    return `<li><span>${label}</span> <button type="button" onclick="${clickAction}" style="margin-left: 0.75rem; padding: 0.25rem 0.7rem; border: 1px solid #3f51b5; border-radius: 4px; background: #3f51b5; color: #fff; cursor: pointer;">打开</button> <a href="${safeHref}" target="_blank" rel="noopener" style="margin-left: 0.5rem; font-size: 0.8em;">备用链接</a></li>`;
   }
 
   function folderIndexHref(folderPath, relativePath) {
